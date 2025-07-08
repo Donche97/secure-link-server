@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Link Segreto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      max-width: 400px;
+      margin: auto;
+      text-align: center;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      word-wrap: break-word;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Link Segreto</h1>
+  <button id="getLinkBtn">Ottieni il Link Segreto</button>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('getLinkBtn').addEventListener('click', () => {
+      fetch('https://secure-link-server-sooty.vercel.app/api/link')
+        .then(res => res.json())
+        .then(data => {
+          if(data.url) {
+            document.getElementById('result').innerHTML = `<a href="${data.url}" target="_blank" rel="noopener noreferrer">Vai al link</a>`;
+          } else if (data.error) {
+            document.getElementById('result').textContent = "Errore: " + data.error;
+          }
+        })
+        .catch(err => {
+          document.getElementById('result').textContent = "Errore di rete";
+          console.error(err);
+        });
+    });
+  </script>
+</body>
+</html>
