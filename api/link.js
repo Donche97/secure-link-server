@@ -1,19 +1,17 @@
 export default function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "https://donche97.github.io");
+  const links = {
+    1: "https://link.clashroyale.com/invite/clan/it?tag=P2UQP9CJ&token=k9pkpagg&platform=iOS", // Armata Rozza
+    2: "https://example.com/ce-magnamm", // CE MAGNAMM
+    3: "https://example.com/dog-rider",   // Dog Rider
+    4: "https://example.com/tori-feroci", // Tori Feroci
+  };
 
-  const secretLink = "https://link.clashroyale.com/invite/clan/it?tag=P2UQP9CJ&token=k9pkpagg&platform=iOS";
+  const id = req.query.id;
+  const url = links[id];
 
-  const ref = req.headers.referer || "";
-  if (!ref.toLowerCase().includes("donche97.github.io")) {
-    return res.status(403).json({ error: "Accesso non autorizzato." });
+  if (!url) {
+    return res.status(400).json({ error: "Link non trovato." });
   }
 
-  const ua = req.headers['user-agent'] || "";
-  if (ua.includes("bot") || ua.includes("curl") || ua.includes("python")) {
-    return res.status(403).json({ error: "Bot bloccato." });
-  }
-
-  setTimeout(() => {
-    res.status(200).json({ url: secretLink });
-  }, 1000);
+  res.status(200).json({ url });
 }
