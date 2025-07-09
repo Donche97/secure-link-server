@@ -2,56 +2,90 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Link Segreto</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 40px;
-      max-width: 400px;
-      margin: auto;
       text-align: center;
+      padding: 50px;
+      background: #f5f5f5;
     }
-    button {
+
+    h1 {
+      color: #222;
+    }
+
+    .btn {
       padding: 12px 24px;
       font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 10px;
     }
-    #result {
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .link-container {
       margin-top: 20px;
+      display: none;
       font-size: 18px;
-      word-wrap: break-word;
     }
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
+
+    #error {
+      color: red;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
   <h1>Link Segreto</h1>
-  <button id="getLinkBtn">Ottieni il Link Segreto</button>
-  <div id="result"></div>
+
+  <button class="btn" onclick="getSecret(1)">Armata Rozza</button>
+  <button class="btn" onclick="getSecret(2)">CE MAGNAMM</button>
+  <button class="btn" onclick="getSecret(3)">Dog Rider</button>
+  <button class="btn" onclick="getSecret(4)">Tori Feroci</button>
+
+  <div id="error"></div>
+  <div id="link" class="link-container">
+    <a id="secretLink" href="#" target="_blank">Vai al link</a>
+  </div>
 
   <script>
-    document.getElementById('getLinkBtn').addEventListener('click', () => {
-      fetch('https://secure-link-server-sooty.vercel.app/api/link')
-        .then(res => res.json())
-        .then(data => {
-          if(data.url) {
-            document.getElementById('result').innerHTML = `<a href="${data.url}" target="_blank" rel="noopener noreferrer">Vai al link</a>`;
-          } else if (data.error) {
-            document.getElementById('result').textContent = "Errore: " + data.error;
-          }
-        })
-        .catch(err => {
-          document.getElementById('result').textContent = "Errore di rete";
-          console.error(err);
-        });
-    });
+    async function getSecret(id) {
+      document.getElementById("error").textContent = "";
+      document.getElementById("link").style.display = "none";
+
+      try {
+        const res = await fetch(`https://secure-link-server-sooty.vercel.app/api/link?id=${id}`);
+        const data = await res.json();
+
+        if (res.ok && data.url) {
+          const linkDiv = document.getElementById("link");
+          const secretAnchor = document.getElementById("secretLink");
+          secretAnchor.href = data.url;
+          linkDiv.style.display = "block";
+
+          // Redirect dopo 5 secondi
+          setTimeout(() => window.location.href = data.url, 5000);
+
+          // Nasconde il link dopo 10 secondi
+          setTimeout(() => {
+            linkDiv.style.display = "none";
+          }, 10000);
+        } else {
+          document.getElementById("error").textContent = data.error || "Errore imprevisto.";
+        }
+      } catch (err) {
+        document.getElementById("error").textContent = "Errore di rete.";
+      }
+    }
   </script>
 </body>
 </html>
