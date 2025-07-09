@@ -1,4 +1,6 @@
 export default function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "https://donche97.github.io");
+
   const secretLink = "https://link.clashroyale.com/invite/clan/it?tag=P2UQP9CJ&token=k9pkpagg&platform=iOS";
 
   const ref = req.headers.referer || "";
